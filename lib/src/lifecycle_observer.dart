@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'lifecycle_mixin.dart';
 import 'route_entry.dart';
 
 class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
-
   static final List<LifecycleObserver> _cache = [];
 
   ///当前路由
@@ -19,11 +19,11 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
     _cache.remove(this);
   }
 
-  @override
-  Future<bool> didPushRoute(String route) {
-    debugPrint("LifecycleObserver didPushRoute:$route");
-    return super.didPushRoute(route);
-  }
+  // @override
+  // Future<bool> didPushRoute(String route) {
+  //   debugPrint("LifecycleObserver didPushRoute:$route");
+  //   return super.didPushRoute(route);
+  // }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -46,8 +46,15 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
-    debugPrint("LifecycleObserver didPush: route:$route, previousRoute:$previousRoute");
-    _history.add(RouteEntry(route));
+    debugPrint("LifecycleObserver didPush: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
+    var routeEntry = RouteEntry(route);
+    _history.add(routeEntry);
+    route.didPush().whenComplete(() {
+      //发生生命周期通知
+      routeEntry.sendEventsToSubscribers([LifecycleEvent.pageShow]);
+      var previousRouteEntry = getRouteEntry(previousRoute);
+      previousRouteEntry?.sendEventsToSubscribers([LifecycleEvent.pageHide]);
+    });
   }
 
   /// The [Navigator] popped `route`.
@@ -57,7 +64,14 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
-    debugPrint("LifecycleObserver didPop: route:$route, previousRoute:$previousRoute");
+    debugPrint("LifecycleObserver didPop: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
+    route.popped.whenComplete(() {
+      var previousRouteEntry = getRouteEntry(previousRoute);
+      previousRouteEntry?.sendEventsToSubscribers([LifecycleEvent.pageShow]);
+      var routeEntry = getRouteEntry(route);
+      routeEntry?.sendEventsToSubscribers([LifecycleEvent.pageHide]);
+      _history.remove(routeEntry);
+    });
   }
 
   /// The [Navigator] removed `route`.
@@ -72,33 +86,64 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didRemove(route, previousRoute);
-    debugPrint("LifecycleObserver didRemove: route:$route, previousRoute:$previousRoute");
+    debugPrint(
+        "LifecycleObserver didRemove: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
   }
 
   /// The [Navigator] replaced `oldRoute` with `newRoute`.
   @override
-  void didReplace({ Route<dynamic>? newRoute, Route<dynamic>? oldRoute }) {
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    debugPrint("LifecycleObserver didReplace: route:$newRoute, previousRoute:$oldRoute");
+    debugPrint(
+        "LifecycleObserver didReplace: route:${_routePrint(newRoute)}, previousRoute:${_routePrint(oldRoute)}");
   }
 
   /// The [Navigator]'s routes are being moved by a user gesture.
   ///
   /// For example, this is called when an iOS back gesture starts, and is used
   /// to disabled hero animations during such interactions.
+  /// iOS侧边手势滑动触发回调 手势开始时回调
   @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  void didStartUserGesture(
+    Route<dynamic> route,
+    Route<dynamic>? previousRoute,
+  ) {
     super.didStartUserGesture(route, previousRoute);
-    debugPrint("LifecycleObserver didStartUserGesture: route:$route, previousRoute:$previousRoute");
+    debugPrint("LifecycleObserver didStartUserGesture: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
   }
 
   /// User gesture is no longer controlling the [Navigator].
   ///
   /// Paired with an earlier call to [didStartUserGesture].
+  /// iOS侧边手势滑动触发停止时回调 不管页面是否退出了都会调用
   @override
   void didStopUserGesture() {
     super.didStopUserGesture();
     debugPrint("LifecycleObserver didStopUserGesture");
+  }
+
+  /// [lifecycleAware] subscribes events.
+  ///
+  /// [route]有变化时，通知[lifecycleAware]。
+  void subscribe(
+    LifecycleMixin lifecycleAware,
+    Route route,
+  ) {
+    RouteEntry? entry = getRouteEntry(route);
+    if (entry != null && entry.lifecycleSubscribers.add(lifecycleAware)) {
+      // debugPrint('LifecycleObserver($hashCode)#subscribe(${lifecycleAware.toString()})');
+      // entry.sendEvents(lifecycleAware, [LifecycleEvent.pageShow]);
+    }
+  }
+
+  /// [lifecycleAware] unsubscribes events.
+  ///
+  /// [lifecycleAware]取消订阅事件。
+  void unsubscribe(LifecycleMixin lifecycleAware) {
+    // debugPrint('LifecycleObserver($hashCode)#unsubscribe(${lifecycleAware.toString()})');
+    for (final RouteEntry entry in _history) {
+      entry.lifecycleSubscribers.remove(lifecycleAware);
+    }
   }
 
   ///获取对应RouteEntry
@@ -113,4 +158,27 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
     return null;
   }
 
+  String _routePrint(Route<dynamic>? route, {bool argument = false}) {
+    if (route?.settings.name == null && route?.hashCode == null) {
+      return "空";
+    }
+    if (argument == true) {
+      return "[name->${route?.settings.name} code->${route?.hashCode} arguments->${route?.settings.arguments}]";
+    }
+    return "[name->${route?.settings.name} code->${route?.hashCode}]";
+  }
+
+  ///获取对应的LifecycleObserver，防止有多个
+  @protected
+  factory LifecycleObserver.internalGet(BuildContext context) {
+    NavigatorState navigator = Navigator.of(context);
+    for (int i = _cache.length - 1; i >= 0; i--) {
+      LifecycleObserver observer = _cache[i];
+      if (observer.navigator == navigator) {
+        return observer;
+      }
+    }
+    throw Exception(
+        'Can not get associated LifecycleObserver, did you forget to register it in MaterialApp or Navigator?');
+  }
 }
