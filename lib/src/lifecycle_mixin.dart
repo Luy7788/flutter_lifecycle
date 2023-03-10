@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 
 enum LifecycleEvent {
+  //页面的
   pageShow,
   pageHide,
-  appBackground,
+  //应用的
   appForeground,
+  appInactive,
+  appBackground,
 }
 
 ///混入
