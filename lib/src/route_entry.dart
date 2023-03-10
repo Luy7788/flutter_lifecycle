@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lifecycle/src/lifecycle_mixin.dart';
-import '../flutter_lifecycle.dart';
 
 class RouteEntry {
   RouteEntry(this.route);

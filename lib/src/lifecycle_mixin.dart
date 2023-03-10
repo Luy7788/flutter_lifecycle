@@ -35,7 +35,4 @@ mixin LifecycleMixin {
 
   /// [LifecycleEvent] callback.
   void onLifecycleEvent(LifecycleEvent event);
-
-  /// Used for an indexed child, such as an item of [ListView]/[GridView].
-  int? get itemIndex => null;
 }

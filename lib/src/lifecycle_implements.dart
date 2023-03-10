@@ -1,11 +1,24 @@
 ///回调的几个方法
 abstract class LifecycleImplements {
 
-  void onPageShow() {}
+  ///页面创建
+  void onPageCreate();
 
-  void onPageHide() {}
+  ///页面展示
+  void onPageShow();
 
-  void onForeground() {}
+  ///页面隐藏
+  void onPageHide();
 
-  void onBackground() {}
+  ///页面销毁
+  void onPageDispose();
+
+  ///回调前台
+  void onForeground();
+
+  ///进入后台
+  void onBackground();
+
+  ///失去活动
+  void onInactive();
 }

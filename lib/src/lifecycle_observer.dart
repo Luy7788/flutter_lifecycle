@@ -57,17 +57,17 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
-    // debugPrint("LifecycleObserver didPush: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
+    // debugPrint("LifecycleObserver didPush: route:${routePrint(route)}, previousRoute:${routePrint(previousRoute)}");
     var routeEntry = RouteEntry(route);
     _history.add(routeEntry);
     route.didPush().whenComplete(() {
       //发生生命周期通知
       routeEntry.sendEventsToSubscribers([LifecycleEvent.pageShow]);
+      if (previousRoute != null) {
+        var previousRouteEntry = getRouteEntry(previousRoute);
+        previousRouteEntry?.sendEventsToSubscribers([LifecycleEvent.pageHide]);
+      }
     });
-    if (previousRoute != null) {
-      var previousRouteEntry = getRouteEntry(previousRoute);
-      previousRouteEntry?.sendEventsToSubscribers([LifecycleEvent.pageHide]);
-    }
   }
 
   /// The [Navigator] popped `route`.
@@ -77,7 +77,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
-    // debugPrint("LifecycleObserver didPop: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
+    // debugPrint("LifecycleObserver didPop: route:${routePrint(route)}, previousRoute:${routePrint(previousRoute)}");
     route.popped.whenComplete(() {
       var routeEntry = getRouteEntry(route);
       routeEntry?.sendEventsToSubscribers([LifecycleEvent.pageHide]);
@@ -101,7 +101,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didRemove(route, previousRoute);
-    // debugPrint("LifecycleObserver didRemove: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
+    // debugPrint("LifecycleObserver didRemove: route:${routePrint(route)}, previousRoute:${routePrint(previousRoute)}");
     //Whether this route is the top-most route on the navigator.
     if (previousRoute?.isCurrent ?? false) {
       var previousRouteEntry = getRouteEntry(previousRoute);
@@ -113,7 +113,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    // debugPrint("LifecycleObserver didReplace: route:${_routePrint(newRoute)}, previousRoute:${_routePrint(oldRoute)}");
+    // debugPrint("LifecycleObserver didReplace: route:${routePrint(newRoute)}, previousRoute:${routePrint(oldRoute)}");
     if (newRoute != null) {
       var routeEntry = RouteEntry(newRoute);
       _history.add(routeEntry);
@@ -139,7 +139,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
     Route<dynamic>? previousRoute,
   ) {
     super.didStartUserGesture(route, previousRoute);
-    // debugPrint("LifecycleObserver didStartUserGesture: route:${_routePrint(route)}, previousRoute:${_routePrint(previousRoute)}");
+    // debugPrint("LifecycleObserver didStartUserGesture: route:${routePrint(route)}, previousRoute:${routePrint(previousRoute)}");
   }
 
   /// User gesture is no longer controlling the [Navigator].
@@ -188,7 +188,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
     return null;
   }
 
-  String _routePrint(Route<dynamic>? route, {bool argument = false}) {
+  String routePrint(Route<dynamic>? route, {bool argument = false}) {
     if (route?.settings.name == null && route?.hashCode == null) {
       return "空";
     }
