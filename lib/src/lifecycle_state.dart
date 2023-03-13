@@ -10,7 +10,12 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
     with LifecycleMixin, LifecycleImplements {
 
   /// 是否需要APP状态通知
+  /// background 、foreground 、inactive
   bool get needAppLifecycleEvent => true;
+
+  /// 是否需要页面生命通知
+  /// create、show、hide、dispose
+  bool get needPageLifecycleEvent => true;
 
   @override
   void onBackground() {
@@ -59,14 +64,14 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   @override
   void initState() {
     // TODO: implement initState
-    onPageCreate();
+    if (needPageLifecycleEvent) onPageCreate();
     super.initState();
     // debugPrint("initState this:$this");
   }
 
   @override
   void dispose() {
-    onPageDispose();
+    if (needPageLifecycleEvent) onPageDispose();
     _lifecycleObserver?.unsubscribe(this);
     super.dispose();
     // debugPrint("dispose this:$this");
@@ -87,13 +92,13 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
 
   @override
   void onLifecycleEvent(LifecycleEvent event) {
-    debugPrint("onLifecycleEvent $event，${_route?.settings.name}, this:$this");
+    // debugPrint("onLifecycleEvent $event，${_route?.settings.name}, this:$this");
     switch (event) {
       case LifecycleEvent.pageShow:
-        onPageShow();
+        if (needPageLifecycleEvent) onPageShow();
         break;
       case LifecycleEvent.pageHide:
-        onPageHide();
+        if (needPageLifecycleEvent) onPageHide();
         break;
       case LifecycleEvent.appForeground:
         if (needAppLifecycleEvent) onForeground();
