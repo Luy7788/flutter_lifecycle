@@ -9,14 +9,39 @@ import 'lifecycle_mixin.dart';
 abstract class LifecycleState<T extends StatefulWidget> extends State<T>
     with LifecycleMixin, LifecycleImplements {
 
-  /// 是否需要APP状态通知
+  /// 是否需要APP状态通知, true需要，false不需要
   /// background 、foreground 、inactive
   bool get needAppLifecycleEvent => true;
 
-  /// 是否需要页面生命通知
+  /// 是否需要页面生命通知, true需要，false不需要
   /// create、show、hide、dispose
   bool get needPageLifecycleEvent => true;
 
+  ///页面创建
+  @override
+  void onPageCreate() {
+    // TODO: implement onPageCreate
+  }
+
+  ///页面销毁
+  @override
+  void onPageDispose() {
+    // TODO: implement onPageDispose
+  }
+
+  ///页面隐藏
+  @override
+  void onPageHide() {
+    // TODO: implement onPageHide
+  }
+
+  ///页面展示
+  @override
+  void onPageShow() {
+    // TODO: implement onPageShow
+  }
+
+  ///进入后台
   @override
   void onBackground() {
     // TODO: implement onBackground
@@ -27,29 +52,10 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
     // TODO: implement onForeground
   }
 
+  ///失去活动
   @override
   void onInactive() {
     // TODO: implement onInactive
-  }
-
-  @override
-  void onPageCreate() {
-    // TODO: implement onPageCreate
-  }
-
-  @override
-  void onPageDispose() {
-    // TODO: implement onPageDispose
-  }
-
-  @override
-  void onPageHide() {
-    // TODO: implement onPageHide
-  }
-
-  @override
-  void onPageShow() {
-    // TODO: implement onPageShow
   }
 
   @override
