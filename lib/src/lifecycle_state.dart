@@ -87,6 +87,7 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   @mustCallSuper
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (needPageLifecycleEvent == false && needAppLifecycleEvent == false) return;
     _route = ModalRoute.of(context);
     // debugPrint("didChangeDependencies route.Name: ${_route?.settings.name}, this:$this");
     // 如果当前route正在popping，避免重复订阅。
