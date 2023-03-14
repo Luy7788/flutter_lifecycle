@@ -91,9 +91,13 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
     // debugPrint("didChangeDependencies route.Name: ${_route?.settings.name}, this:$this");
     // 如果当前route正在popping，避免重复订阅。
     if (_route == null || !(_route?.isActive ?? false)) return;
-    _lifecycleObserver = LifecycleObserver.internalGet(context);
-    //添加订阅
-    _lifecycleObserver?.subscribe(this, _route!);
+    try {
+      _lifecycleObserver = LifecycleObserver.internalGet(context);
+      //添加订阅
+      _lifecycleObserver?.subscribe(this, _route!);
+    } catch (e) {
+      debugPrint('didChangeDependencies LifecycleObserver.internalGet : $e');
+    }
   }
 
   @override
