@@ -70,9 +70,9 @@ class _HomePageState extends LifecycleState<HomePage> {
               },
             ),
             ElevatedButton(
-              child: const Text('Open ListView page'),
+              child: const Text('Open PageView page'),
               onPressed: () {
-                Navigator.of(context).pushNamed('list');
+                Navigator.of(context).pushNamed('pageView');
               },
             ),
           ],
@@ -273,43 +273,6 @@ class _ListPageState extends LifecycleState<ListPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
     );
   }
-}
-
-class ListItem extends StatefulWidget {
-  const ListItem({Key? key, required this.index}) : super(key: key);
-
-  final int index;
-
-  @override
-  _ListItemState createState() {
-    return _ListItemState();
-  }
-}
-
-class _ListItemState extends LifecycleState<ListItem>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return ListTile(
-      title: Text(
-        'Item ${widget.index}',
-      ),
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => false;
 }
 
 class Sub1 extends StatefulWidget {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lifecycle_example/page_view.dart';
 import 'home_page.dart';
 import 'package:flutter_lifecycle/flutter_lifecycle.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         'sub1': (_) => Sub1(),
         'nav2': (_) => const Nav2Home(),
-        'list': (_) => const ListPage(),
+        'pageView': (_) => const PageViewTest(),
       },
 
       home: Builder(
