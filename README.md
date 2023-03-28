@@ -2,7 +2,7 @@
 
 flutter页面生命周期插件
 
-##  步骤：
+## 接入步骤：
 * 1. 引入
 
 ```
@@ -53,7 +53,7 @@ MaterialApp(
   bool get needPageLifecycleEvent => true;
 ```
 
-##可根据这个插件设计项目基类widget, 以下demo:
+## 可根据这个插件设计项目基类widget, 以下demo:
 
 ```
 
