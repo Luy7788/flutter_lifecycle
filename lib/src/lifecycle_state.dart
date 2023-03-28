@@ -17,6 +17,9 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   /// create、show、hide、dispose
   bool get needPageLifecycleEvent => true;
 
+  ///是否是pageView内控件
+  bool get isPageViewItem => false;
+
   ///页面创建
   @override
   void onPageCreate() {
@@ -67,14 +70,15 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   LifecycleObserver? _lifecycleObserver;
   ModalRoute? _route;
 
+  @mustCallSuper
   @override
   void initState() {
-    // TODO: implement initState
     if (needPageLifecycleEvent) onPageCreate();
     super.initState();
     // debugPrint("initState this:$this");
   }
 
+  @mustCallSuper
   @override
   void dispose() {
     if (needPageLifecycleEvent) onPageDispose();
@@ -83,11 +87,15 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
     // debugPrint("dispose this:$this");
   }
 
-  @override
   @mustCallSuper
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    //是否需要生命周期回调
     if (needPageLifecycleEvent == false && needAppLifecycleEvent == false) return;
+    //是否是pageView内控件
+    if (isPageViewItem == true) return;
+    //
     _route = ModalRoute.of(context);
     // debugPrint("didChangeDependencies route.Name: ${_route?.settings.name}, this:$this");
     // 如果当前route正在popping，避免重复订阅。

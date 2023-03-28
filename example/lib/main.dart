@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
         'nav2': (_) => const Nav2Home(),
         'pageView': (_) => const PageViewTest(),
       },
-
       home: Builder(
         builder: (context) {
           return const HomePage();

@@ -1,6 +1,6 @@
 # flutter_lifecycle
 
-flutter页面生命周期插件
+flutter页面生命周期插件；可根据这个插件设计项目基类widget,底下demo
 
 ## 接入步骤：
 * 1. 引入
@@ -22,7 +22,7 @@ MaterialApp(
     );
 ```
 
-* 2. 需要获取页面生命周期的StatefulWidget的state继承 LifecycleState，提供以下方法：
+* 3. 需要获取页面生命周期的StatefulWidget的state继承 LifecycleState，提供以下方法：
 
 ```
   ///页面创建
@@ -41,7 +41,7 @@ MaterialApp(
   void onBackground();
 ```
 
-* 3. 根据场景设置是否需要回调事件
+* ps. 可以根据场景设置是否需要回调事件
 
 ```
   /// 是否需要APP状态通知, true需要，false不需要
@@ -53,7 +53,7 @@ MaterialApp(
   bool get needPageLifecycleEvent => true;
 ```
 
-## 可根据这个插件设计项目基类widget, 以下demo:
+##  以下demo:
 
 ```
 
