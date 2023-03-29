@@ -149,7 +149,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   @override
   void didStopUserGesture() {
     super.didStopUserGesture();
-    debugPrint("LifecycleObserver didStopUserGesture");
+    // debugPrint("LifecycleObserver didStopUserGesture");
   }
 
   /// [lifecycleAware] subscribes events.

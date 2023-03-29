@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lifecycle/flutter_lifecycle.dart';
 
 class PageViewTest extends StatefulWidget {
   const PageViewTest({Key? key}) : super(key: key);
 
   @override
-  _PageViewTestState createState() {
+  State createState() {
     return _PageViewTestState();
   }
 }
@@ -66,10 +66,10 @@ class _PageViewTestState extends State<PageViewTest> {
         });
       },
       items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(label: pageList[0], icon: Icon(Icons.home)),
-        BottomNavigationBarItem(label: pageList[1], icon: Icon(Icons.book)),
+        BottomNavigationBarItem(label: pageList[0], icon: const Icon(Icons.home)),
+        BottomNavigationBarItem(label: pageList[1], icon: const Icon(Icons.book)),
         BottomNavigationBarItem(
-            label: pageList[2], icon: Icon(Icons.perm_identity)),
+            label: pageList[2], icon: const Icon(Icons.perm_identity)),
       ],
     );
   }
@@ -86,7 +86,7 @@ class PageViewItem extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PageViewItemState createState() {
+  State createState() {
     return _PageViewItemState();
   }
 }
@@ -95,20 +95,17 @@ class _PageViewItemState extends State<PageViewItem> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
-    debugPrint("initState: ${widget.txt}");
   }
 
   @override
   void dispose() {
     super.dispose();
-    debugPrint("dispose: ${widget.txt}");
   }
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    debugPrint("didChangeDependencies : ${widget.txt}");
   }
 
   @override
@@ -117,12 +114,36 @@ class _PageViewItemState extends State<PageViewItem> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      color: widget.color,
-      alignment: Alignment.center,
-      child: Text(
-        widget.txt,
-        style: const TextStyle(color: Colors.white, fontSize: 28),
+    return BasePageLifecycle(
+      isScrollViewItem: true,
+      onPageCreate: (){
+        debugPrint("onPageCreate ${widget.txt}");
+      },
+      onPageShow: (){
+        debugPrint("onPageShow ${widget.txt}");
+      },
+      onPageHide: (){
+        debugPrint("onPageHide ${widget.txt}");
+      },
+      onPageDispose: (){
+        debugPrint("onPageDispose ${widget.txt}");
+      },
+      onForeground: (){
+        debugPrint("onForeground ${widget.txt}");
+      },
+      onInactive: () {
+        debugPrint("onInactive ${widget.txt}");
+      },
+      onBackground: (){
+        debugPrint("onBackground ${widget.txt}");
+      },
+      child: Container(
+        color: widget.color,
+        alignment: Alignment.center,
+        child: Text(
+          widget.txt,
+          style: const TextStyle(color: Colors.white, fontSize: 28),
+        ),
       ),
     );
   }

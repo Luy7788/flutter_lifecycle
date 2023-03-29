@@ -17,49 +17,32 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   /// create、show、hide、dispose
   bool get needPageLifecycleEvent => true;
 
-  // ///是否是pageView内控件
-  // bool get isPageViewItem => false;
-
-  ///页面创建
-  @override
-  void onPageCreate() {
-    // TODO: implement onPageCreate
-  }
-
-  ///页面销毁
-  @override
-  void onPageDispose() {
-    // TODO: implement onPageDispose
-  }
-
-  ///页面隐藏
-  @override
-  void onPageHide() {
-    // TODO: implement onPageHide
-  }
-
-  ///页面展示
-  @override
-  void onPageShow() {
-    // TODO: implement onPageShow
-  }
-
-  ///进入后台
-  @override
-  void onBackground() {
-    // TODO: implement onBackground
-  }
-
-  @override
-  void onForeground() {
-    // TODO: implement onForeground
-  }
-
-  ///失去活动
-  @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  // ///页面创建
+  // @override
+  // void onPageCreate();
+  //
+  // ///页面销毁
+  // @override
+  // void onPageDispose();
+  //
+  // ///页面隐藏
+  // @override
+  // void onPageHide();
+  //
+  // ///页面展示
+  // @override
+  // void onPageShow();
+  //
+  // ///进入后台
+  // @override
+  // void onBackground();
+  //
+  // @override
+  // void onForeground();
+  //
+  // ///失去活动
+  // @override
+  // void onInactive();
 
   @override
   Widget build(BuildContext context) {

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [defaultLifecycleObserver],
       routes: {
         'sub1': (_) => Sub1(),
-        'nav2': (_) => const Nav2Home(),
+        'nav2': (_) => const Nav2(),
         'pageView': (_) => const PageViewTest(),
       },
       home: Builder(

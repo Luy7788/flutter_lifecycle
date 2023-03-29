@@ -9,7 +9,7 @@ flutter页面生命周期插件；可根据这个插件设计项目基类widget,
 import 'package:flutter_lifecycle/flutter_lifecycle.dart';
 ```
 
-* 2. 设置MaterialApp->navigatorObservers: [defaultLifecycleObserver]
+* 2. MaterialApp进行设置navigatorObservers: [defaultLifecycleObserver]
 
 ```
 MaterialApp(
@@ -22,7 +22,47 @@ MaterialApp(
     );
 ```
 
-* 3. 需要获取页面生命周期的StatefulWidget的state继承 LifecycleState，提供以下方法：
+* 3. 需要获取页面生命周期的可以直接套上BasePageLifecycle，提供以下方法：
+
+```
+@override
+  Widget build(BuildContext context) {
+    return BasePageLifecycle(
+      //是否是滚动视图的子组件，默认false
+      isScrollViewItem: true,
+      onPageCreate: (){
+        debugPrint("onPageCreate ${widget.txt}");
+      },
+      onPageShow: (){
+        debugPrint("onPageShow ${widget.txt}");
+      },
+      onPageHide: (){
+        debugPrint("onPageHide ${widget.txt}");
+      },
+      onPageDispose: (){
+        debugPrint("onPageDispose ${widget.txt}");
+      },
+      onForeground: (){
+        debugPrint("onForeground ${widget.txt}");
+      },
+      onInactive: () {
+        debugPrint("onInactive ${widget.txt}");
+      },
+      onBackground: (){
+        debugPrint("onBackground ${widget.txt}");
+      },
+      child: Container(
+        color: widget.color,
+        alignment: Alignment.center,
+        child: Text(
+          widget.txt,
+          style: const TextStyle(color: Colors.white, fontSize: 28),
+        ),
+      ),
+    );
+```
+
+* ps. 也可以自定义StatefulWidget,继承LifecycleState来实现，具体参考BasePageLifecycle类的实现
 
 ```
   ///页面创建
@@ -39,11 +79,7 @@ MaterialApp(
   void onInactive();
   ///进入后台
   void onBackground();
-```
-
-* ps. 可以根据场景设置是否需要回调事件
-
-```
+  
   /// 是否需要APP状态通知, true需要，false不需要
   /// background 、foreground 、inactive
   bool get needAppLifecycleEvent => true;
@@ -56,9 +92,8 @@ MaterialApp(
 ##  以下demo:
 
 ```
-
 ///基础容器
-class BaseContainer extends StatefulWidget {
+class BasePage extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onPageCreate;
   final VoidCallback? onPageShow;
@@ -68,7 +103,7 @@ class BaseContainer extends StatefulWidget {
   final VoidCallback? onForeground;
   final VoidCallback? onInactive;
 
-  const BaseContainer({
+  const BasePage({
     Key? key,
     this.child,
     this.onPageCreate,
@@ -82,12 +117,12 @@ class BaseContainer extends StatefulWidget {
 
   @override
   State createState() {
-    return _BaseContainerState();
+    return _BasePageState();
   }
 }
 
-class _BaseContainerState extends LifecycleState<BaseContainer> {
-    
+class _BasePageState extends LifecycleState<BasePage> {
+
   /// 是否需要APP状态通知, true需要，false不需要
   /// background 、foreground 、inactive
   @override
@@ -97,59 +132,50 @@ class _BaseContainerState extends LifecycleState<BaseContainer> {
   /// create、show、hide、dispose
   @override
   bool get needPageLifecycleEvent => widget.onPageCreate != null ||
-			      widget.onPageShow != null ||
-			      widget.onPageHide != null ||
-			      widget.onPageDispose != null;
+      widget.onPageShow != null ||
+      widget.onPageHide != null ||
+      widget.onPageDispose != null;
 
   @override
   void onPageCreate() {
-    super.onPageCreate();
     widget.onPageCreate?.call();
   }
 
   @override
   void onPageDispose() {
-    super.onPageDispose();
     widget.onPageDispose?.call();
   }
 
   @override
   void onPageShow() {
-    super.onPageShow();
     widget.onPageShow?.call();
   }
 
   @override
   void onPageHide() {
-    super.onPageHide();
     widget.onPageHide?.call();
   }
 
   @override
   void onBackground() {
-    super.onBackground();
     widget.onBackground?.call();
   }
 
   @override
   void onForeground() {
-    super.onForeground();
     widget.onForeground?.call();
   }
 
   @override
   void onInactive() {
-    super.onInactive();
     widget.onInactive?.call();
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-           color: widget.backgroundColor,
-           child: widget.child,
+    return Container( 
+      child: widget.child,
     );
   }
 }
-
 ```
