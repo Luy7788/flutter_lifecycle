@@ -68,7 +68,7 @@ class _ItemLifecycleState extends LifecycleState<ItemLifecycle> {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: widget.key ?? Key("${hashCode}"),
+      key: Key("$hashCode"),
       onVisibilityChanged: (visibilityInfo) {
         widget.stateCallback(visibilityInfo.visibleFraction>0, visibilityInfo.visibleFraction);
       },

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lifecycle/flutter_lifecycle.dart';
 
-import 'item_lifecycle.dart';
-
 class BasePageLifecycle extends StatefulWidget {
   final Widget child;
   ///页面创建
