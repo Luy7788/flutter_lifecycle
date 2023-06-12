@@ -175,7 +175,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   ) {
     RouteEntry? entry = getRouteEntry(route);
     if (entry != null && entry.lifecycleSubscribers.add(lifecycleAware)) {
-      _print('LifecycleObserver($hashCode)#subscribe(${lifecycleAware.toString()})');
+      _print('LifecycleObserver($hashCode) #subscribe(${lifecycleAware.toString()})');
       // entry.sendEvents(lifecycleAware, [LifecycleEvent.pageShow]);
     }
   }
@@ -184,7 +184,7 @@ class LifecycleObserver extends NavigatorObserver with WidgetsBindingObserver {
   ///
   /// [lifecycleAware]取消订阅事件。
   void unsubscribe(LifecycleMixin lifecycleAware) {
-    _print('LifecycleObserver($hashCode)#unsubscribe(${lifecycleAware.toString()})');
+    _print('LifecycleObserver($hashCode) #unsubscribe(${lifecycleAware.toString()})');
     for (final RouteEntry entry in _history) {
       entry.lifecycleSubscribers.remove(lifecycleAware);
     }
